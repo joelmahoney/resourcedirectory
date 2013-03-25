@@ -1,5 +1,5 @@
 -if @business_type.errors.any?
-  #error_explanation
+  .alert.alert-error
     %h2= "#{pluralize(@business_type.errors.count, "error")} prohibited this business_type from being saved:"
     %ul
       - @business_type.errors.full_messages.each do |msg|
