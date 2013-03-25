@@ -29,7 +29,6 @@ end
 group :developemt do
   gem 'thin'
   gem 'foreman'
-  gem 'sqlite3'
 end
 
 
