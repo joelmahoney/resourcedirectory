@@ -34,14 +34,7 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
       strokeWeight: 2
       fillColor: "#000000"
       fillOpacity: 0.35
-
-    #Polyline Styling
-    @polylines_conf =         #default style for polylines
-      strokeColor: "#FF0000"
-      strokeOpacity: 1
-      strokeWeight: 2
       clickable: false
-      zIndex: null
 
     #Circle Styling
     @circles_conf =           #default style for circles
@@ -111,18 +104,19 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
     markerLatLng = @createLatLng(args.Lat, args.Lng)
     #Marker sizes are expressed as a Size of X,Y
     if args.marker_picture == "" and args.rich_marker == null
-      defaultOptions = {position: markerLatLng, map: @map, title: args.marker_title, draggable: args.marker_draggable}
+      defaultOptions = {position: markerLatLng, map: @serviceObject, title: args.marker_title, draggable: args.marker_draggable, zIndex: args.zindex}
       mergedOptions  = @mergeObjectWithDefault @markers_conf.raw, defaultOptions
       return new google.maps.Marker mergedOptions
 
     if (args.rich_marker != null)
       return new RichMarker({
         position: markerLatLng
-        map:       @map
+        map:       @serviceObject
         draggable: args.marker_draggable
         content:   args.rich_marker
         flat:      if args.marker_anchor == null then false else args.marker_anchor[1]
         anchor:    if args.marker_anchor == null then 0     else args.marker_anchor[0]
+        zIndex:    args.zindex
       })
 
     #default behavior
@@ -132,7 +126,7 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
     #create or retrieve existing MarkerImages
     markerImage = @createOrRetrieveImage(args.marker_picture, args.marker_width, args.marker_height, imageAnchorPosition)
     shadowImage = @createOrRetrieveImage(args.shadow_picture, args.shadow_width, args.shadow_height, shadowAnchorPosition)
-    defaultOptions = {position: markerLatLng, map: @map, icon: markerImage, title: args.marker_title, draggable: args.marker_draggable, shadow: shadowImage}
+    defaultOptions = {position: markerLatLng, map: @serviceObject, icon: markerImage, title: args.marker_title, draggable: args.marker_draggable, shadow: shadowImage,  zIndex: args.zindex}
     mergedOptions  = @mergeObjectWithDefault @markers_conf.raw, defaultOptions
     return new google.maps.Marker mergedOptions
 
@@ -190,7 +184,7 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
   #////////////////////////////////////////////////////
 
   createClusterer : (markers_array) ->
-    return new MarkerClusterer( @map, markers_array, {  maxZoom: @markers_conf.clusterer_maxZoom, gridSize: @markers_conf.clusterer_gridSize, styles: @customClusterer() })
+    return new MarkerClusterer( @serviceObject, markers_array, {  maxZoom: @markers_conf.clusterer_maxZoom, gridSize: @markers_conf.clusterer_gridSize, styles: @customClusterer() })
 
   clearClusterer : ->
     @markerClusterer.clearMarkers()
@@ -234,7 +228,7 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
     return ->
       # Close the latest selected marker before opening the current one.
       currentMap.visibleInfoWindow.close() if currentMap.visibleInfoWindow != null
-      infoWindow.open(currentMap.map, marker)
+      infoWindow.open(currentMap.serviceObject, marker)
       currentMap.visibleInfoWindow = infoWindow
 
   #////////////////////////////////////////////////////
@@ -245,17 +239,101 @@ class @Gmaps4RailsGoogle extends Gmaps4Rails
     kml_options = kml.options || {}
     kml_options = @mergeObjectWithDefault(kml_options, @kml_options)
     kml =  new google.maps.KmlLayer( kml.url, kml_options)
-    kml.setMap(@map)
+    kml.setMap(@serviceObject)
     return kml
 
+  #////////////////////////////////////////////////////
+  #/////////////////// POLYLINES //////////////////////
+  #////////////////////////////////////////////////////
 
+  #creates a single polyline, triggered by create_polylines
+  create_polyline : (polyline) ->
+    polyline_coordinates = []
+
+    #2 cases here, either we have a coded array of LatLng or we have an Array of LatLng
+    for element in polyline
+      #if we have a coded array
+      if element.coded_array?
+        decoded_array = new google.maps.geometry.encoding.decodePath(element.coded_array)
+        #loop through every point in the array
+        for point in decoded_array
+          polyline_coordinates.push(point)
+
+      #or we have an array of latlng
+      else
+        #by convention, a single polyline could be customized in the first array or it uses default values
+        if element == polyline[0]
+          strokeColor   = element.strokeColor   || @polylines_conf.strokeColor
+          strokeOpacity = element.strokeOpacity || @polylines_conf.strokeOpacity
+          strokeWeight  = element.strokeWeight  || @polylines_conf.strokeWeight
+          clickable     = element.clickable     || @polylines_conf.clickable
+          zIndex        = element.zIndex        || @polylines_conf.zIndex
+
+        #add latlng if positions provided
+        if element.lat? && element.lng?
+          latlng = @createLatLng(element.lat, element.lng)
+          polyline_coordinates.push(latlng)
+
+    # Construct the polyline
+    new_poly = new google.maps.Polyline
+      path:         polyline_coordinates
+      strokeColor:  strokeColor
+      strokeOpacity: strokeOpacity
+      strokeWeight: strokeWeight
+      clickable:    clickable
+      zIndex:       zIndex
+
+    #save polyline
+    polyline.serviceObject = new_poly
+    new_poly.setMap(@serviceObject)
+
+  
+  updateBoundsWithPolylines: ()->
+    for polyline in @polylines
+      polyline_points = polyline.serviceObject.latLngs.getArray()[0].getArray()
+      for point in polyline_points
+        @boundsObject.extend point
+  
+  #////////////////////////////////////////////////////
+  #/////////////////        KML      //////////////////
+  #////////////////////////////////////////////////////
+
+  create_kml : ->
+    for kml in @kml
+      kml.serviceObject = @createKmlLayer kml
+            
   #////////////////////////////////////////////////////
   #/////////////////// Other methods //////////////////
   #////////////////////////////////////////////////////
 
   fitBounds : ->
-    @map.fitBounds(@boundsObject) unless @boundsObject.isEmpty()
+    @serviceObject.fitBounds(@boundsObject) unless @boundsObject.isEmpty()
 
   centerMapOnUser : ->
-    @map.setCenter(@userLocation)
+    @serviceObject.setCenter(@userLocation)
+  
+  updateBoundsWithPolygons: ()->
+    for polygon in @polygons
+      polygon_points = polygon.serviceObject.latLngs.getArray()[0].getArray()
+      for point in polygon_points
+        @boundsObject.extend point
 
+  updateBoundsWithCircles: ()->
+    for circle in @circles
+      @boundsObject.extend(circle.serviceObject.getBounds().getNorthEast())
+      @boundsObject.extend(circle.serviceObject.getBounds().getSouthWest())
+
+  extendMapBounds: ()->
+    for bound in @map_options.bounds
+      #create points from bounds provided
+      @boundsObject.extend @createLatLng(bound.lat, bound.lng)
+  
+  adaptMapToBounds:()->
+    #if autozoom is false, take user info into account
+    if !@map_options.auto_zoom
+      map_center = @boundsObject.getCenter()
+      @map_options.center_latitude  = map_center.lat()
+      @map_options.center_longitude = map_center.lng()
+      @serviceObject.setCenter(map_center)
+    else
+      @fitBounds()

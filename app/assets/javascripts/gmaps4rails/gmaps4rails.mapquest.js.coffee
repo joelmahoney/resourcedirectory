@@ -1,7 +1,7 @@
 #######################################################################################################
 ##############################################  Map Quest #############################################
 #######################################################################################################
-# http://www.mapquestapi.com/sdk/js/v6.0.0/poi.html
+# http://developer.mapquest.com/web/documentation/sdk/javascript/v7.0/api/MQA.Poi.html
 
 class @Gmaps4RailsMapquest extends Gmaps4Rails
 
@@ -121,14 +121,25 @@ class @Gmaps4RailsMapquest extends Gmaps4Rails
   #////////////////////////////////////////////////////
 
   fitBounds: ->
-    @map.zoomToRect @boundsObject if @markers.length >=2
-    @map.setCenter @markers[0].serviceObject.latLng if @markers.length == 1 
+    @serviceObject.zoomToRect @boundsObject if @markers.length >=2
+    @serviceObject.setCenter @markers[0].serviceObject.latLng if @markers.length == 1 
 
   centerMapOnUser: -> 
-    @map.setCenter @userLocation
+    @serviceObject.setCenter @userLocation
     
   addToMap: (object) ->
-    @map.addShape object
+    @serviceObject.addShape object
 
   removeFromMap: (object)->
-    @map.removeShape object
+    @serviceObject.removeShape object
+    
+  updateBoundsWithPolylines: ()->
+
+  updateBoundsWithPolygons: ()->
+
+  updateBoundsWithCircles: ()->
+    
+  extendMapBounds :->
+
+  adaptMapToBounds: ->
+    @fitBounds()

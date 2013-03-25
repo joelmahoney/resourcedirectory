@@ -18,6 +18,7 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
     @openMarkers = null
     @markersLayer = null
     @markersControl = null
+    @polylinesLayer = null
 
   #////////////////////////////////////////////////////
   #/////////////// Basic Objects   ////////////////////
@@ -57,12 +58,12 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
     #//creating markers' dedicated layer 
     if (@markersLayer == null) 
       @markersLayer = new OpenLayers.Layer.Vector("Markers", null)
-      @map.addLayer(@markersLayer)
+      @serviceObject.addLayer(@markersLayer)
       #//TODO move?
       @markersLayer.events.register("featureselected", @markersLayer, @onFeatureSelect)
       @markersLayer.events.register("featureunselected", @markersLayer, @onFeatureUnselect)
       @markersControl = new OpenLayers.Control.SelectFeature(@markersLayer)
-      @map.addControl(@markersControl)
+      @serviceObject.addControl(@markersControl)
       @markersControl.activate()
     #//showing default pic if none available
     if args.marker_picture == ""  
@@ -88,7 +89,7 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
           style_mark.backgroundXOffset = args.shadow_anchor[0]
           style_mark.backgroundYOffset = args.shadow_anchor[1]
       
-    style_mark.graphicTitle = args.title
+    style_mark.graphicTitle = args.marker_title
     marker = new OpenLayers.Feature.Vector(
                new OpenLayers.Geometry.Point(args.Lng, args.Lat),
                null,
@@ -107,9 +108,10 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
     @boundsObject = new OpenLayers.Bounds()
   
   clearMarkersLayerIfExists: -> 
-    @map.removeLayer(@markersLayer) if @markersLayer != null and @map.getLayer(@markersLayer.id) != null
+    @serviceObject.removeLayer(@markersLayer) if @markersLayer != null and @serviceObject.getLayer(@markersLayer.id) != null
   
   extendBoundsWithMarkers: ->
+    console.log "here"
     for marker in @markers
       @boundsObject.extend(@createLatLng(marker.lat,marker.lng))        
 
@@ -148,7 +150,7 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
             strokeColor: "#32a8a9"
        
      @clearMarkersLayerIfExists()
-     @map.addLayer(clusters)
+     @serviceObject.addLayer(clusters)
      clusters.addFeatures(markers_array)
      return clusters
    
@@ -164,7 +166,7 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
        @markerClusterer = @createClusterer markers_array
    
    clearClusterer: ->
-     @map.removeLayer @markerClusterer
+     @serviceObject.removeLayer @markerClusterer
 
   #////////////////////////////////////////////////////
   #/////////////////// INFO WINDOW ////////////////////
@@ -197,13 +199,63 @@ class @Gmaps4RailsOpenlayers extends Gmaps4Rails
       feature.popup.destroy()
       feature.popup = null
 
+  #////////////////////////////////////////////////////
+  #/////////////////// POLYLINES //////////////////////
+  #////////////////////////////////////////////////////
+
+  create_polyline : (polyline) ->
+	
+    if(@polylinesLayer == null)
+      @polylinesLayer = new OpenLayers.Layer.Vector("Polylines", null)
+      @serviceObject.addLayer(@polylinesLayer)
+      @polylinesLayer.events.register("featureselected", @polylinesLayer, @onFeatureSelect)
+      @polylinesLayer.events.register("featureunselected", @polylinesLayer, @onFeatureUnselect)
+      @polylinesControl = new OpenLayers.Control.DrawFeature(@polylinesLayer, OpenLayers.Handler.Path)
+      @serviceObject.addControl(@polylinesControl)
+    
+    polyline_coordinates = []
+
+    for element in polyline
+      #by convention, a single polyline could be customized in the first array or it uses default values
+      if element == polyline[0]
+        strokeColor   = element.strokeColor   || @polylines_conf.strokeColor
+        strokeOpacity = element.strokeOpacity || @polylines_conf.strokeOpacity
+        strokeWeight  = element.strokeWeight  || @polylines_conf.strokeWeight
+        clickable     = element.clickable     || @polylines_conf.clickable
+        zIndex        = element.zIndex        || @polylines_conf.zIndex	  
+      
+      #add latlng if positions provided
+      if element.lat? && element.lng?
+        latlng = new OpenLayers.Geometry.Point(element.lng, element.lat)
+        polyline_coordinates.push(latlng)
+    
+    line_points = new OpenLayers.Geometry.LineString(polyline_coordinates);
+    line_style = { strokeColor: strokeColor, strokeOpacity: strokeOpacity, strokeWidth: strokeWeight };
+   
+    polyline = new OpenLayers.Feature.Vector(line_points, null, line_style);
+    polyline.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"))
+
+    @polylinesLayer.addFeatures([polyline])
+
+    return polyline
+
+  updateBoundsWithPolylines: ()->
+  
+  updateBoundsWithPolygons: ()->
+    
+  updateBoundsWithCircles: ()->
+  
   # #////////////////////////////////////////////////////
   # #/////////////////// Other methods //////////////////
   # #////////////////////////////////////////////////////
  
   fitBounds: ->
-    @map.zoomToExtent(@boundsObject, true)
+    @serviceObject.zoomToExtent(@boundsObject, true)
   
   centerMapOnUser: ->
-    @map.setCenter @userLocation
+    @serviceObject.setCenter @userLocation
     
+  extendMapBounds :->
+    
+  adaptMapToBounds: ->
+    @fitBounds()
