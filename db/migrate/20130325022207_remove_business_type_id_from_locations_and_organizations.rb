@@ -1,9 +1,7 @@
 class RemoveBusinessTypeIdFromLocationsAndOrganizations < ActiveRecord::Migration
   def up
     remove_column :locations, :business_type_id
-    remove_index :locations, :business_type_id
     remove_column :organizations, :business_type_id
-    remove_index :organizations, :business_type_id
   end
 
   def down
