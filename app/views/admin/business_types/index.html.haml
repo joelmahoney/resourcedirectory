@@ -1,0 +1,14 @@
+%h1.header
+  Business Type
+
+%table.table
+  - @business_types.each do |business_type|
+    %tr
+      %td
+        %h3= business_type.name
+
+      %td{:width=>'40px'}= link_to 'Edit', edit_admin_business_type_path(business_type), :class => 'btn btn-mini'
+      %td{:width=>'50px'}= link_to 'Delete', admin_business_type_path(business_type), :confirm => "Delete #{business_type.name}?", :method => :delete, :class => 'btn btn-mini btn-danger'
+
+%br/
+= link_to 'New Business Type', new_admin_business_type_path, :class => 'btn btn-large btn-success'

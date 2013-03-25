@@ -26,25 +26,14 @@
               == (#{service.results_in_set(locations)})
 %br/
 
-%h3 Languages
+%h3 Business Type
 %table
-  - for language in @languages
+  - for business_type in @business_type
     %tr
       %td.top{:width=>'20px'}
-        = check_box_tag "language_#{language.id}", :class => 'language_checkbox'
+        = check_box_tag "business_type_#{business_type.id}", :class => 'business_type_checkbox'
       %td.top
-        = language.name
-        == (#{language.results_in_set(locations)})
-%br/
-
-%h3 Counties
-%table
-  - for county in @counties
-    %tr
-      %td.top{:width=>'20px'}
-        = check_box_tag "county_#{county.id}", :class => 'county_checkbox'
-      %td.top
-        = county.name
-        == (#{county.results_in_set(locations)})
+        = business_type.name
+        == (#{business_type.results_in_set(locations)})
 %br/
 %br/

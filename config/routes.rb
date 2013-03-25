@@ -1,13 +1,12 @@
 Bayarearesources::Application.routes.draw do
   root :to => 'locations#index'   
   resources :locations, :only => [:index, :show]
-  resources :services
   devise_for :users
   
   
   match '/admin/' => 'admin/organizations#index'
   namespace :admin do
-    resources :counties
+    resources :business_types
     resources :categories do
       resources :services
     end

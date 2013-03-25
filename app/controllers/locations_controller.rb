@@ -1,7 +1,7 @@
 class LocationsController < ApplicationController
 
   def index
-    @counties = County.all(:order => :name)
+    @business_types = BusinessType.all(:order => :name)
     @categories = Category.all(:order=>:name)
     @languages = Language.all
     @services = Service.all(:order=>:name)

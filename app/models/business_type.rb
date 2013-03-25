@@ -1,4 +1,4 @@
-class County < ActiveRecord::Base
+class BusinessType < ActiveRecord::Base
   attr_accessible :name
   has_many :locations
   has_many :organizations

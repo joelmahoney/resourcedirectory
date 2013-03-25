@@ -1,0 +1,5 @@
+%h1.header 
+  Editing Business Type
+
+= form_for( :business_type, :url => admin_business_type_path(@business_type), :html => {:method => :put}) do |f|
+  = render :partial => 'form', :locals => {:f => f}
