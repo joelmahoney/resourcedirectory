@@ -26,9 +26,9 @@
               == (#{service.results_in_set(locations)})
 %br/
 
-%h3 Business Type
+%h3 Business Types
 %table
-  - for business_type in @business_type
+  - for business_type in @business_types
     %tr
       %td.top{:width=>'20px'}
         = check_box_tag "business_type_#{business_type.id}", :class => 'business_type_checkbox'
