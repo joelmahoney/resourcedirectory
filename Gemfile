@@ -29,7 +29,7 @@ end
 group :developemt do
   gem 'thin'
   gem 'foreman'
-  gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'sqlite3'
 end
 
 
