@@ -39,13 +39,7 @@
       = @location.hours
       %br/
       %br/
-    
-    - if @location.organization.try(:population)
-      %h3 Population Served (Eligibility)
-      = @location.organization.population
-      %br/
-      %br/
-    
+        
     - if @location.service_delivery_options.present?
       %h3 How Do I Access These Services?
       %table
