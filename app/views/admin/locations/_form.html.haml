@@ -15,9 +15,6 @@
       = f.label :city
       = f.text_field :city
     .field
-      = f.label :business_type_id
-      = f.select :business_type_id, options_from_collection_for_select(BusinessType.all(:order => :name), :id, :name, @location.business_type.try(:id))
-    .field
       = f.label :zipcode
       = f.text_field :zipcode
     .field
@@ -74,6 +71,14 @@
     .field
       = f.label :parking_fees
       = f.text_field :parking_fees
+      
+    %h2 Business Types
+    %br/
+    - for business_type in BusinessType.all(:order=>:name)
+      = check_box_tag "location[business_type_ids][]", business_type.id, @location.business_types.include?(business_type) 
+      = business_type.name
+      %br/
+    
 
   .span4
     %h2 Services
@@ -98,15 +103,7 @@
           - else
             = check_box_tag "[service_delivery_options][#{option.id}]"
           = option.name
-      %br/
     
-    %h2 Languages
-    %br/
-    - for language in Language.all(:order=>:name)
-      = check_box_tag "location[language_ids][]", language.id, @location.languages.include?(language)
-      = language.name
-      %br/
-
 .row
   .span12
     %br/

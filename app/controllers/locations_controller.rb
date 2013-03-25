@@ -3,7 +3,6 @@ class LocationsController < ApplicationController
   def index
     @business_types = BusinessType.all(:order => :name)
     @categories = Category.all(:order=>:name)
-    @languages = Language.all
     @services = Service.all(:order=>:name)
     params[:miles] = 10 if params[:miles].blank? || params[:miles] == 'Distance'      
     

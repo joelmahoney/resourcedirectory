@@ -43,10 +43,10 @@ class Admin::LocationsController < ApplicationController
       end
     end
     
-    @languages = []
-    if params[:languages].present?
-      params[:languages].each do |l|
-        @languages << Language.find(l[0].to_i)
+    @business_types = []
+    if params[:business_types].present?
+      params[:business_types].each do |l|
+        @business_types << BusinessType.find(l[0].to_i)
       end
     end
     
@@ -63,9 +63,9 @@ class Admin::LocationsController < ApplicationController
           @location.services.delete_all
           @location.services << @services
         end
-        if @languages.present?
-          @organization.languages.delete_all
-          @organization.languages << @languages
+        if @business_types.present?
+          @location.business_types.delete_all
+          @location.business_types << @business_types
         end
         if @service_delivery_options.present?
           @location.service_delivery_options.delete_all
@@ -89,10 +89,10 @@ class Admin::LocationsController < ApplicationController
       end
     end
     
-    @languages = []
-    if params[:languages].present?
-      params[:languages].each do |l|
-        @languages << Language.find(l[0].to_i)
+    @business_types = []
+    if params[:business_types].present?
+      params[:business_types].each do |l|
+        @business_types << BusinessType.find(l[0].to_i)
       end
     end
     
@@ -109,9 +109,9 @@ class Admin::LocationsController < ApplicationController
           @location.services.delete_all
           @location.services << @services
         end
-        if @languages.present?
-          @organization.languages.delete_all
-          @organization.languages << @languages
+        if @business_types.present?
+          @location.business_types.delete_all
+          @location.business_types << @business_types
         end
         if @service_delivery_options.present?
           @location.service_delivery_options.delete_all
@@ -138,5 +138,6 @@ class Admin::LocationsController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organizations = Organization.all(:order => :name)
     @services = Service.all(:order => :name)
+    @business_types = BusinessType.all(:order => :name)
   end
 end

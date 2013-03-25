@@ -24,15 +24,12 @@ module LocationsHelper
         end
       end
     end
-    if location.languages.present?
-      location.languages.each do |language|
-        if language.present?
-          tags << 'language_' + language.id.to_s
+    if location.business_types.present?
+      location.business_types.each do |business_type|
+        if business_type.present?
+          tags << 'business_type_' + business_type.id.to_s
         end
       end
-    end
-    if location.business_type.present?
-      tags << 'business_type_' + location.business_type.id.to_s
     end
     tags.join(' ')
   end

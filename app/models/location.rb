@@ -1,17 +1,16 @@
 class Location < ActiveRecord::Base
-  belongs_to :business_type
   belongs_to :organization
   has_many :location_service_delivery_options
   has_many :service_delivery_options, :through => :location_service_delivery_options
   
   has_and_belongs_to_many :services, :uniq => true
-  has_and_belongs_to_many :languages, :uniq => true
+  has_and_belongs_to_many :business_types, :uniq => true
   
   
   acts_as_gmappable :address => :full_address
   geocoded_by :full_address
     
-  attr_accessible :ac_bus_accessible, :address, :bart_accessible, :city, :directions, :email, :fax, :free_parking, :free_street_parking, :hours, :latitude, :longitude, :muni_bus_accessible, :muni_train_accessible, :name, :organization_id, :paid_parking_lot, :parking_fees, :parking_meters, :phone, :public_transportation_stop, :wheelchair_accessible, :zipcode, :business_type_id, :language_ids, :delivery_method
+  attr_accessible :ac_bus_accessible, :address, :bart_accessible, :city, :directions, :email, :fax, :free_parking, :free_street_parking, :hours, :latitude, :longitude, :muni_bus_accessible, :muni_train_accessible, :name, :organization_id, :paid_parking_lot, :parking_fees, :parking_meters, :phone, :public_transportation_stop, :wheelchair_accessible, :zipcode, :business_type_ids, :delivery_method
   
   after_validation :geocode
   
