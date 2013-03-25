@@ -2,6 +2,7 @@ class Admin::UsersController < ApplicationController
   layout 'admin'
   before_filter :authenticate_user!
   before_filter :load_organizations
+  load_and_authorize_resource
   
   def index
     @users = User.all(:order => :email)

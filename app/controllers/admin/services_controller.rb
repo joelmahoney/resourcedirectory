@@ -2,6 +2,8 @@ class Admin::ServicesController < ApplicationController
   layout 'admin'
   before_filter :authenticate_user!
   before_filter :load_variables
+  load_and_authorize_resource
+  
   
   def index
     @services = @category.services

@@ -1,6 +1,7 @@
 class Admin::BusinessTypesController < ApplicationController
   layout 'admin'
   before_filter :authenticate_user!
+  load_and_authorize_resource
 
   def index
     @business_types = BusinessType.all(:order => :name)
