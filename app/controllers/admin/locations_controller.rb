@@ -35,42 +35,12 @@ class Admin::LocationsController < ApplicationController
   def create
     @location = Location.new(params[:location])
     @location.organization = @organization
+    params[:location][:service_ids] ||= []
+    params[:location][:business_type_ids] ||= []
+    params[:location][:service_delivery_option_ids] ||= []
     
-    @services = []    
-    if params[:services].present?
-      params[:services].each do |s|
-        @services << Service.find(s[0].to_i)
-      end
-    end
-    
-    @business_types = []
-    if params[:business_types].present?
-      params[:business_types].each do |l|
-        @business_types << BusinessType.find(l[0].to_i)
-      end
-    end
-    
-    @service_delivery_options = []
-    if params[:service_delivery_options].present?
-      params[:service_delivery_options].each do |s|
-        @service_delivery_options << ServiceDeliveryOption.find(s[0].to_i)
-      end
-    end
-
     respond_to do |format|
       if @location.save
-        if @services.present?
-          @location.services.delete_all
-          @location.services << @services
-        end
-        if @business_types.present?
-          @location.business_types.delete_all
-          @location.business_types << @business_types
-        end
-        if @service_delivery_options.present?
-          @location.service_delivery_options.delete_all
-          @location.service_delivery_options << @service_delivery_options
-        end
         format.html { redirect_to admin_organization_locations_url(@organization), notice: 'Location was successfully created.' }
       else
         format.html { render action: "new" }
@@ -81,42 +51,12 @@ class Admin::LocationsController < ApplicationController
   def update
     @location = Location.find(params[:id])
     params[:location][:organization_id] = @organization.id
-    
-    @services = []    
-    if params[:services].present?
-      params[:services].each do |s|
-        @services << Service.find(s[0].to_i)
-      end
-    end
-    
-    @business_types = []
-    if params[:business_types].present?
-      params[:business_types].each do |l|
-        @business_types << BusinessType.find(l[0].to_i)
-      end
-    end
-    
-    @service_delivery_options = []
-    if params[:service_delivery_options].present?
-      params[:service_delivery_options].each do |s|
-        @service_delivery_options << ServiceDeliveryOption.find(s[0].to_i)
-      end
-    end
+    params[:location][:service_ids] ||= []
+    params[:location][:business_type_ids] ||= []
+    params[:location][:service_delivery_option_ids] ||= []
     
     respond_to do |format|
       if @location.update_attributes(params[:location])
-        if @services.present?
-          @location.services.delete_all
-          @location.services << @services
-        end
-        if @business_types.present?
-          @location.business_types.delete_all
-          @location.business_types << @business_types
-        end
-        if @service_delivery_options.present?
-          @location.service_delivery_options.delete_all
-          @location.service_delivery_options << @service_delivery_options
-        end
         format.html { redirect_to admin_organization_locations_path(@organization), notice: 'Location was successfully updated.' }
       else
         format.html { render action: "edit" }
