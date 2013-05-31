@@ -6,7 +6,7 @@ class Organization < ActiveRecord::Base
   
   attr_accessible :address, :city, :description, :email, :latitude, :longitude, :name, :phone, :population, :website, :zipcode, :contact
   
-  after_validation :geocode
+  # after_validation :geocode
   
   def full_address
     [address, city, zipcode].compact.join(', ')
