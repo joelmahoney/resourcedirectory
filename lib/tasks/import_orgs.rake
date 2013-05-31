@@ -1,8 +1,9 @@
 require 'csv'
+require "#{Rails.root.to_s}/config/environment.rb"
 desc "Import from CSV file"
-task :import_orgs, :filename, :needs => :environment do |task,args|
+task :import_orgs do |task|
   counter = 0
-  CSV.foreach("tmp/listings.csv") do |row|
+  CSV.foreach("#{Rails.root.to_s}/public/listings.csv") do |row|
     unless counter == 0
       @organization = Organization.where(name: row[0]).first_or_create
       if row[1].present?
