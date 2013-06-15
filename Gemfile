@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.11'
-gem 'pg', :group => [:production]
+gem 'pg'
 gem 'geocoder'
 gem 'devise'
 gem 'cancan'
@@ -29,6 +29,7 @@ end
 group :developemt do
   gem 'thin'
   gem 'foreman'
+  gem 'taps'
 end
 
 
