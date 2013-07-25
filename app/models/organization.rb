@@ -7,8 +7,16 @@ class Organization < ActiveRecord::Base
   attr_accessible :address, :city, :description, :email, :latitude, :longitude, :name, :phone, :population, :website, :zipcode, :contact
   
   after_validation :geocode
+  before_save :strip_url
   
   def full_address
     [address, city, zipcode].compact.join(', ')
+  end
+
+  private
+  def strip_url
+    if self.website.present?
+      self.website = website.gsub(/http:\/\//, '').gsub(/https:\/\//, '')
+    end
   end
 end

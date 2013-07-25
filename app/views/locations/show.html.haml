@@ -30,7 +30,7 @@
         = mail_to @organization.email, @organization.email
         %br/
       - if @organization.website.present?
-        = link_to @organization.website, @organization.website
+        == <a href='http://#{@organization.website}'>#{@organization.website}</a>
         %br/
       %br/
 
