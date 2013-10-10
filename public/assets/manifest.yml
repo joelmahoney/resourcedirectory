@@ -19,12 +19,10 @@ glyphicons-halflings.png: glyphicons-halflings-98229852eec704a6e0213faea9d4b953.
 glyphicons-halflings/index.png: glyphicons-halflings-98229852eec704a6e0213faea9d4b953.png
 prosperity_partners.jpg: prosperity_partners-634c953f920f1cb32dfefeda4c5fca4c.jpg
 prosperity_partners/index.jpg: prosperity_partners-634c953f920f1cb32dfefeda4c5fca4c.jpg
-application.js: application-b842a62b0e5510f37d67c5c4b2e12357.js
-application/index.js: application-b842a62b0e5510f37d67c5c4b2e12357.js
+application.js: application-84b3fa09d3a3714130da7aceca69078c.js
+application/index.js: application-84b3fa09d3a3714130da7aceca69078c.js
 application.css: application-52b15cf206ab9a85aa98fa19107280ac.css
 application/index.css: application-52b15cf206ab9a85aa98fa19107280ac.css
-jquery.min.map: jquery.min-6c267bfd2b3f36e6edccb2e584934c1c.map
-jquery/index.min.map: jquery.min-6c267bfd2b3f36e6edccb2e584934c1c.map
 tinymce.js: tinymce-7dd3bcb3de37f3e572293141caf7fe88.js
 tinymce/license.txt: tinymce/license.txt
 tinymce/license/index.txt: tinymce/license/index.txt

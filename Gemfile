@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.14'
+gem 'rails', '3.2.12'
 gem 'pg'
 gem 'geocoder'
 gem 'devise'
@@ -19,7 +19,7 @@ gem 'tinymce-rails'
 # in production environments by default.
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
-  gem 'jquery-rails'
+  gem 'jquery-rails', '~> 2.0.2'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platform => :ruby
 
