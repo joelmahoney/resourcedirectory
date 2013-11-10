@@ -2,8 +2,10 @@
 
 .row
   .span6
-    %p
-      = @location.try(:organization).try(:description)
+    - if @location.try(:organization).try(:description).present?
+      %p
+        = @location.try(:organization).try(:description)
+      %br/
     %h3 Contact Info
     %br/
     %h4 Location Info
