@@ -8,7 +8,7 @@ gem 'cancan'
 gem 'haml-rails'
 gem 'sass-rails',   '~> 3.2.3'
 gem 'high_voltage'
-gem 'gmaps4rails'
+gem 'gmaps4rails', '~> 1.5.6'
 gem 'tinymce-rails'
 
 # Bundle edge Rails instead:
@@ -19,7 +19,7 @@ gem 'tinymce-rails'
 # in production environments by default.
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
-  gem 'jquery-rails', '~> 2.0.2'
+  gem 'jquery-rails'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platform => :ruby
 
@@ -29,7 +29,6 @@ end
 group :developemt do
   gem 'thin'
   gem 'foreman'
-  gem 'taps'
 end
 
 

@@ -1,0 +1,8 @@
+development:
+  adapter: postgresql
+  database: resourcedirectory
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  timeout: 5000
